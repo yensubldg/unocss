@@ -59,7 +59,7 @@ importers:
       vite: ^2.7.12
       vite-plugin-inspect: ^0.3.13
       vite-plugin-pages: ^0.19.9
-      vitest: ^0.0.136
+      vitest: ^0.1.17
       vue: ^3.2.26
       vue-router: ^4.0.12
     devDependencies:
@@ -118,7 +118,7 @@ importers:
       vite: 2.7.12
       vite-plugin-inspect: 0.3.13_vite@2.7.12
       vite-plugin-pages: 0.19.9_vite@2.7.12
-      vitest: 0.0.136_@vitest+ui@0.1.13
+      vitest: 0.1.17_@vitest+ui@0.1.13
       vue: 3.2.26
       vue-router: 4.0.12_vue@3.2.26
 
@@ -4594,8 +4594,8 @@ packages:
     engines: {node: '>=14.0.0'}
     dev: true
 
-  /tinyspy/0.2.7:
-    resolution: {integrity: sha512-AaNITSED8/2j2/nSgPeQZW2nNhdTxNJ7XwcdBezI7MtPS2C+pJ1HjcHc/qfDhohUhQvODITdxzWH9u+Qs+7yFQ==}
+  /tinyspy/0.2.8:
+    resolution: {integrity: sha512-4VXqQzzh9gC5uOLk77cLr9R3wqJq07xJlgM9IUdCNJCet139r+046ETKbU1x7mGs7B0k7eopyH5U6yflbBXNyA==}
     engines: {node: '>=14.0.0'}
     dev: true
 
@@ -4995,8 +4995,8 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitest/0.0.136_@vitest+ui@0.1.13:
-    resolution: {integrity: sha512-l/FByRw+GNIckkAKMUib8HF5K+U3vmlrBOIl2ugt2FtMPvxSCKmRrbZWPmo3bbMzK1dekqSLILFp0v8WjNS5Lg==}
+  /vitest/0.1.17_@vitest+ui@0.1.13:
+    resolution: {integrity: sha512-iARxJzpPktbpTJduN3iHilQlsUJsSKOYmaTI1414HzqGKjL25BhqpX5nucnpoTtdDNDmFNMuJwWroAHVzYH2Hg==}
     engines: {node: '>=14.14.0'}
     hasBin: true
     peerDependencies:
@@ -5020,7 +5020,7 @@ packages:
       chai: 4.3.4
       local-pkg: 0.4.1
       tinypool: 0.1.1
-      tinyspy: 0.2.7
+      tinyspy: 0.2.8
       vite: 2.7.12
     transitivePeerDependencies:
       - less

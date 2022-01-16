@@ -44,6 +44,43 @@ export class UnoGenerator {
     return set
   }
 
+  async parse(raw: string) {
+    let current = raw
+    for (const p of this.config.preprocess)
+      current = p(raw)!
+
+    if (this.isBlocked(current))
+      return false
+
+    const applied = this.matchVariants(raw, current)
+
+    if (!applied || this.isBlocked(applied[1]))
+      return false
+
+    const context: RuleContext = {
+      rawSelector: raw,
+      currentSelector: applied[1],
+      theme: this.config.theme,
+      generator: this,
+      variantHandlers: applied[2],
+      constructCSS: (...args) => this.constructCustomCSS(context, ...args),
+    }
+
+    // expand shortcuts
+    const expanded = this.expandShortcut(applied[1], context)
+    if (expanded) {
+      const utils = await this.stringifyShortcuts(applied, context, expanded[0], expanded[1])
+      if (utils?.length)
+        return utils
+    }
+    // no shortcut
+    else {
+      const utils = (await this.parseUtil(applied, context))?.map(i => this.stringifyUtil(i)).filter(notNull)
+      if (utils?.length)
+        return utils
+    }
+  }
+
   async generate(
     input: string | Set<string>,
     {
@@ -81,11 +118,6 @@ export class UnoGenerator {
       }
     }
 
-    const block = (raw: string) => {
-      this.blocked.add(raw)
-      this._cache.set(raw, null)
-    }
-
     await Promise.all(Array.from(tokens).map(async(raw) => {
       if (matched.has(raw) || this.blocked.has(raw))
         return
@@ -98,40 +130,13 @@ export class UnoGenerator {
         return
       }
 
-      let current = raw
-      for (const p of this.config.preprocess)
-        current = p(raw)!
+      const result = await this.parse(raw)
 
-      if (this.isBlocked(current))
-        return block(current)
+      if (result)
+        return hit(raw, result)
 
-      const applied = this.matchVariants(raw, current)
-
-      if (!applied || this.isBlocked(applied[1]))
-        return block(raw)
-
-      const context: RuleContext = {
-        rawSelector: raw,
-        currentSelector: applied[1],
-        theme: this.config.theme,
-        generator: this,
-        variantHandlers: applied[2],
-        constructCSS: (...args) => this.constructCustomCSS(context, ...args),
-      }
-
-      // expand shortcuts
-      const expanded = this.expandShortcut(applied[1], context)
-      if (expanded) {
-        const utils = await this.stringifyShortcuts(applied, context, expanded[0], expanded[1])
-        if (utils?.length)
-          return hit(raw, utils)
-      }
-      // no shortcut
-      else {
-        const utils = (await this.parseUtil(applied, context))?.map(i => this.stringifyUtil(i)).filter(notNull)
-        if (utils?.length)
-          return hit(raw, utils)
-      }
+      if (result === false)
+        this.blocked.add(raw)
 
       // set null cache for unmatched result
       this._cache.set(raw, null)

@@ -1,3 +1,5 @@
+import type { UnoGenerator } from '@unocss/core'
+import { notNull } from '@unocss/core'
 import { deepCopy, isSpace, searchFrom, searchPropEnd } from './tools'
 import { InlineAtRule, Keyframes, Property, Style, StyleSheet } from '.'
 
@@ -11,24 +13,58 @@ export enum layerOrder {
 interface Processor {
   compile(
     classNames: string,
-    prefix?: string,
-    showComment?: boolean,
-    ignoreGenerated?: boolean,
     handleIgnored?: (ignored: string) => Style | Style[] | undefined,
-    outputClassName?: string
-  ): { styleSheet: StyleSheet }
+  ): Promise<StyleSheet>
   theme(name: string, b: string): any
-  resolveVariants(name: string): Record<string, () => string>
 }
 
 export class CSSParser {
-  css?: string
   processor?: Processor
   variables: Record<string, unknown> = {}
+
   private _cache: Record<string, Style[]> = {}
-  constructor(css?: string, processor?: Processor) {
-    this.css = css
-    this.processor = processor
+  constructor(
+    public css: string | undefined = undefined,
+    public generator: UnoGenerator,
+  ) {
+    if (generator) {
+      this.processor = {
+        async compile(
+          classNames: string,
+          handleIgnored?: (ignored: string) => Style | Style[] | undefined,
+        ) {
+          const sheet = new StyleSheet()
+          const classes = classNames.split(/\s+/g)
+          await Promise.all(classes.map(async(i) => {
+            const util = await generator.parse(i)
+            if (util) {
+              for (const [, selector, body] of util) {
+                const props = body
+                  .split(/;/g)
+                  .map((i) => {
+                    const [name, value] = i.trim().split(':')
+                    if (name && value)
+                      return new Property(name, value)
+                    return undefined
+                  })
+                  .filter(notNull)
+                const style = new Style(selector, props)
+                sheet.add(style)
+              }
+            }
+            else {
+              const style = handleIgnored?.(i)
+              if (style)
+                sheet.add(style)
+            }
+          }))
+          return sheet
+        },
+        theme() {
+          return undefined
+        },
+      }
+    }
   }
 
   private _addCache(style: Style) {
@@ -162,7 +198,7 @@ export class CSSParser {
     return styles
   }
 
-  parse(css = this.css, parent?: string, parentType?: 'atRule' | 'selector'): StyleSheet {
+  async parse(css = this.css, parent?: string, parentType?: 'atRule' | 'selector'): Promise<StyleSheet> {
     const styleSheet = new StyleSheet()
     if (!css || isSpace(css)) return styleSheet
     let index = 0
@@ -205,7 +241,7 @@ export class CSSParser {
         // allow last rule without semicolon
         let rule = css.slice(index, nestEnd)
         if (!/[};]\s*$/.test(rule)) rule = `${rule};`
-        const content = this.parse(rule, selector)
+        const content = await this.parse(rule, selector)
 
         index = nestEnd + 1
         styleSheet.add(this._generateNestStyle(content.children, selector, firstChar === '@' ? 'atRule' : 'selector'))
@@ -230,11 +266,14 @@ export class CSSParser {
               if (atRule) styleSheet.add(this._generateNestProperty(atRule, parent, parentType))
             }
             else if ('apply' in directives && directives.apply) {
-              const result = this.processor.compile(directives.apply, undefined, false, false, (ignored) => {
-                if ((`.${ignored}`) in this._cache) return this._cache[`.${ignored}`]
-              })
+              const result = await this.processor.compile(
+                directives.apply,
+                (ignored) => {
+                  if ((`.${ignored}`) in this._cache) return this._cache[`.${ignored}`]
+                },
+              )
 
-              styleSheet.add(result.styleSheet.clone().children.map((i) => {
+              styleSheet.add(result.clone().children.map((i) => {
                 if (!(i instanceof Keyframes)) {
                   i.selector = undefined
                   if (directives.important)
