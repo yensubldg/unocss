@@ -1,0 +1,43 @@
+{
+  "name": "@unocss/css-transform",
+  "version": "0.22.2",
+  "description": "CSS Transformation",
+  "keywords": [
+    "unocss"
+  ],
+  "homepage": "https://github.com/antfu/unocss/tree/main/packages/css-transform#readme",
+  "bugs": {
+    "url": "https://github.com/antfu/unocss/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antfu/unocss.git",
+    "directory": "packages/css-transform"
+  },
+  "funding": "https://github.com/sponsors/antfu",
+  "license": "MIT",
+  "author": "Anthony Fu <anthonyfu117@hotmail.com>",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "stub": "unbuild --stub"
+  },
+  "peerDependencies": {
+    "@unocss/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@unocss/core": "workspace:*"
+  }
+}

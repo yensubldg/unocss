@@ -183,6 +183,12 @@ importers:
   packages/core:
     specifiers: {}
 
+  packages/css-transform:
+    specifiers:
+      '@unocss/core': workspace:*
+    devDependencies:
+      '@unocss/core': link:../core
+
   packages/extractor-pug:
     specifiers:
       '@types/pug': ^2.0.6
@@ -214,7 +220,7 @@ importers:
       '@unocss/vite': workspace:*
       '@unocss/webpack': workspace:*
     dependencies:
-      '@nuxt/kit': /@nuxt/kit-edge/3.0.0-27368185.a4f300b
+      '@nuxt/kit': /@nuxt/kit-edge/3.0.0-27369360.33ebb01
       '@unocss/core': link:../core
       '@unocss/preset-attributify': link:../preset-attributify
       '@unocss/preset-icons': link:../preset-icons
@@ -224,7 +230,7 @@ importers:
       '@unocss/vite': link:../vite
       '@unocss/webpack': link:../webpack
     devDependencies:
-      '@nuxt/schema': /@nuxt/schema-edge/3.0.0-27368185.a4f300b
+      '@nuxt/schema': /@nuxt/schema-edge/3.0.0-27369360.33ebb01
 
   packages/plugins-common:
     specifiers:
@@ -650,15 +656,15 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.13.0
 
-  /@nuxt/kit-edge/3.0.0-27368185.a4f300b:
-    resolution: {integrity: sha512-UFN5EUbCnxbNh7aRL6AV6lYMrv9mo1X8mgV5doXiewZi0m/sydOCkffLGtRSYLm63fO4K0AfkJd1J05kXXB62Q==}
+  /@nuxt/kit-edge/3.0.0-27369360.33ebb01:
+    resolution: {integrity: sha512-p38BaW9o83CPi52k06ao/XSr1uYCLeLcA52S/W7cr3QPPsDflma1JK3Pa8Dwc3Rhqut59+YvbKTmA3Bb/YGnsg==}
     engines: {node: ^14.16.0 || ^16.11.0 || ^17.0.0}
     dependencies:
-      '@nuxt/schema': /@nuxt/schema-edge/3.0.0-27368185.a4f300b
+      '@nuxt/schema': /@nuxt/schema-edge/3.0.0-27369360.33ebb01
       consola: 2.15.3
-      defu: 5.0.0
+      defu: 5.0.1
       dotenv: 11.0.0
-      globby: 11.1.0
+      globby: 12.1.0
       hash-sum: 2.0.0
       jiti: 1.12.9
       lodash.template: 4.5.0
@@ -672,12 +678,12 @@ packages:
       untyped: 0.3.0
     dev: false
 
-  /@nuxt/schema-edge/3.0.0-27368185.a4f300b:
-    resolution: {integrity: sha512-8sUsjGNKq957wS9yKzCB0zBv9B9uSKIhmHDFLpDV/2sTl3N5q9sFMaRtOgFEgwDVAcO882h0xOOwgHaHuUG3Iw==}
+  /@nuxt/schema-edge/3.0.0-27369360.33ebb01:
+    resolution: {integrity: sha512-m90kfhAFP5zC4YWjrmbq/gNXhuXvMPYR13BDHHPW0kCOq9RD238DFBkVNQ+gBnRxAy0Cq4ko1pSG5o70yxrhCg==}
     engines: {node: ^14.16.0 || ^16.11.0 || ^17.0.0}
     dependencies:
       create-require: 1.1.1
-      defu: 5.0.0
+      defu: 5.0.1
       jiti: 1.12.9
       pathe: 0.2.0
       scule: 0.2.1
@@ -1407,6 +1413,12 @@ packages:
   /array-union/2.1.0:
     resolution: {integrity: sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==}
     engines: {node: '>=8'}
+    dev: true
+
+  /array-union/3.0.1:
+    resolution: {integrity: sha512-1OvF9IbWwaeiM9VhzYXVQacMibxpXOMYVNIvMtKRyX9SImBXpKcFr8XvFDeEslCyuH/t6KRt7HEO94AlP8Iatw==}
+    engines: {node: '>=12'}
+    dev: false
 
   /array.prototype.flat/1.2.5:
     resolution: {integrity: sha512-KaYU+S+ndVqyUnignHftkwc58o3uVU1jzczILJ1tN2YaIZpFIKBiP/x/j97E5MVPsaCloPbqWLB/8qCTVvT2qg==}
@@ -1831,6 +1843,9 @@ packages:
 
   /defu/5.0.0:
     resolution: {integrity: sha512-VHg73EDeRXlu7oYWRmmrNp/nl7QkdXUxkQQKig0Zk8daNmm84AbGoC8Be6/VVLJEKxn12hR0UBmz8O+xQiAPKQ==}
+
+  /defu/5.0.1:
+    resolution: {integrity: sha512-EPS1carKg+dkEVy3qNTqIdp2qV7mUP08nIsupfwQpz++slCVRw7qbQyWvSTig+kFPwz2XXp5/kIIkH+CwrJKkQ==}
 
   /destr/1.1.0:
     resolution: {integrity: sha512-Ev/sqS5AzzDwlpor/5wFCDu0dYMQu/0x2D6XfAsQ0E7uQmamIgYJ6Dppo2T2EOFVkeVYWjc+PCLKaqZZ57qmLg==}
@@ -2942,16 +2957,16 @@ packages:
       slash: 3.0.0
     dev: true
 
-  /globby/11.1.0:
-    resolution: {integrity: sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g==}
-    engines: {node: '>=10'}
+  /globby/12.1.0:
+    resolution: {integrity: sha512-YULDaNwsoUZkRy9TWSY/M7Obh0abamTKoKzTfOI3uU+hfpX2FZqOq8LFDxsjYheF1RH7ITdArgbQnsNBFgcdBA==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     dependencies:
-      array-union: 2.1.0
+      array-union: 3.0.1
       dir-glob: 3.0.1
       fast-glob: 3.2.10
       ignore: 5.2.0
       merge2: 1.4.1
-      slash: 3.0.0
+      slash: 4.0.0
     dev: false
 
   /graceful-fs/4.2.8:
@@ -4300,6 +4315,12 @@ packages:
   /slash/3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
+    dev: true
+
+  /slash/4.0.0:
+    resolution: {integrity: sha512-3dOsAHXXUkQTpOYcoAxLIorMTp4gIQr5IW3iVb7A7lFIp0VHhnynm9izx6TssdrIcVIESAlVjtnO2K8bg+Coew==}
+    engines: {node: '>=12'}
+    dev: false
 
   /source-map-js/1.0.1:
     resolution: {integrity: sha512-4+TN2b3tqOCd/kaGRJ/sTYA0tR0mdXx26ipdolxcwtJVqEnqNYvlCAt1q3ypy4QMlYus+Zh34RNtYLoq2oQ4IA==}
