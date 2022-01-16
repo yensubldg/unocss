@@ -18,6 +18,26 @@ interface Processor {
   theme(name: string, b: string): any
 }
 
+async function utilToStyles(name: string, generator: UnoGenerator): Promise<Style[] | undefined> {
+  const styles: Style[] = []
+  const util = await generator.parse(name)
+  if (util) {
+    for (const [, selector, body] of util) {
+      const props = body
+        .split(/;/g)
+        .map((i) => {
+          const [name, value] = i.trim().split(':')
+          if (name && value)
+            return new Property(name, value)
+          return undefined
+        })
+        .filter(notNull)
+      styles.push(new Style(selector, props))
+    }
+    return styles
+  }
+}
+
 export class CSSParser {
   processor?: Processor
   variables: Record<string, unknown> = {}
@@ -36,21 +56,9 @@ export class CSSParser {
           const sheet = new StyleSheet()
           const classes = classNames.split(/\s+/g)
           await Promise.all(classes.map(async(i) => {
-            const util = await generator.parse(i)
-            if (util) {
-              for (const [, selector, body] of util) {
-                const props = body
-                  .split(/;/g)
-                  .map((i) => {
-                    const [name, value] = i.trim().split(':')
-                    if (name && value)
-                      return new Property(name, value)
-                    return undefined
-                  })
-                  .filter(notNull)
-                const style = new Style(selector, props)
-                sheet.add(style)
-              }
+            const styles = await utilToStyles(i, generator)
+            if (styles) {
+              sheet.add(...styles)
             }
             else {
               const style = handleIgnored?.(i)
