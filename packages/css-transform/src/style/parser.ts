@@ -47,32 +47,8 @@ export class CSSParser {
     public css: string | undefined = undefined,
     public generator: UnoGenerator,
   ) {
-    if (generator) {
-      this.processor = {
-        async compile(
-          classNames: string,
-          handleIgnored?: (ignored: string) => Style | Style[] | undefined,
-        ) {
-          const sheet = new StyleSheet()
-          const classes = classNames.split(/\s+/g)
-          await Promise.all(classes.map(async(i) => {
-            const styles = await utilToStyles(i, generator)
-            if (styles) {
-              sheet.add(...styles)
-            }
-            else {
-              const style = handleIgnored?.(i)
-              if (style)
-                sheet.add(style)
-            }
-          }))
-          return sheet
-        },
-        theme() {
-          return undefined
-        },
-      }
-    }
+    if (generator)
+      this.processor = createWindiProcessor(generator)
   }
 
   private _addCache(style: Style) {
@@ -319,5 +295,24 @@ export class CSSParser {
     }
     if (!parent) this._cache = {}
     return styleSheet.combine()
+  }
+}
+
+function createWindiProcessor(generator: UnoGenerator): Processor {
+  return {
+    async compile(
+      classNames: string,
+      handleIgnored?: (ignored: string) => Style | Style[] | undefined,
+    ) {
+      const sheet = new StyleSheet()
+      const raw = '-'
+      const context = generator.makeContext(raw)!
+      const expended = classNames.split(/\s+/g).flatMap(i => generator.expandShortcut(i, context))
+      generator.stringifyShortcuts(context, expended)
+      return sheet
+    },
+    theme() {
+      return undefined
+    },
   }
 }
